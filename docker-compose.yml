@@ -1,0 +1,12 @@
+version: '3.3'
+services:
+    client_app:
+        image: surw/reachable_node
+        environment: 
+            - TARGET_SERVER=server_app:8080
+            - MODE=client
+    server_app:
+        image: surw/reachable_node
+        environment: 
+            - TARGET_SERVER=server_app:8080
+            - MODE=server
