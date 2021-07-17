@@ -4,9 +4,20 @@ services:
         image: surw/reachable_node
         environment: 
             - TARGET_SERVER=server_app:8080
-            - MODE=client
+        depends_on: server_app
+        deploy:
+            placement:
+                max_replicas_per_node: 1
+                constraints:
+                - "node.labels.client==true"
     server_app:
         image: surw/reachable_node
         environment: 
-            - TARGET_SERVER=server_app:8080
-            - MODE=server
+            - NO_CLIENT=true
+        ports: 
+            - 8080:8080
+        deploy:
+            placement:
+                max_replicas_per_node: 1
+                constraints:
+                - "node.labels.server==true"
