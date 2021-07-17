@@ -5,8 +5,8 @@ WORKDIR /app
 COPY . /app
 RUN go mod download
 
-RUN go build -o /bin
+RUN go build -o /bin_go
 RUN chmod +x /bin
 EXPOSE 8080
 
-CMD [ "/bin" ]
+CMD [ "/bin_go" ]

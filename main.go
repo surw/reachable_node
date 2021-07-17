@@ -17,7 +17,7 @@ var (
 func main() {
 	addr := os.Getenv("TARGET_SERVER")
 	mode := os.Getenv("NO_CLIENT")
-	if strings.ToLower(mode) == "true" {
+	if strings.ToLower(mode) != "true" {
 		go func() {
 			time.Sleep(time.Second * 2)
 			for {
