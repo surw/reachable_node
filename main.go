@@ -17,12 +17,14 @@ var (
 func main() {
 	addr := os.Getenv("TARGET_SERVER")
 	mode := os.Getenv("NO_CLIENT")
+	client := http.DefaultClient
+	client.Timeout = time.Second * 2
 	if strings.ToLower(mode) != "true" {
 		go func() {
 			time.Sleep(time.Second * 2)
 			for {
 				time.Sleep(time.Millisecond * 500)
-				resp, err := http.Get(fmt.Sprintf("http://%s", addr))
+				resp, err := client.Get(fmt.Sprintf("http://%s", addr))
 				if err != nil {
 					fmt.Println(hostname, err)
 					continue
