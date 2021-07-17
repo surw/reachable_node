@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -15,27 +16,31 @@ var (
 
 func main() {
 	addr := os.Getenv("TARGET_SERVER")
-	go func() {
-		time.Sleep(time.Second * 2)
-		for {
-			time.Sleep(time.Millisecond * 500)
-			resp, err := http.Get(fmt.Sprintf("http://%s", addr))
-			if err != nil {
-				fmt.Println(hostname, err)
-				continue
+	mode := os.Getenv("MODE")
+	if strings.ToLower(mode) == "server" {
+		go func() {
+			time.Sleep(time.Second * 2)
+			for {
+				time.Sleep(time.Millisecond * 500)
+				resp, err := http.Get(fmt.Sprintf("http://%s", addr))
+				if err != nil {
+					fmt.Println(hostname, err)
+					continue
+				}
+				if resp.Body == nil {
+					fmt.Println(hostname, "body is nil")
+					continue
+				}
+				bs, err := ioutil.ReadAll(resp.Body)
+				if err != nil {
+					fmt.Println(hostname, err)
+					continue
+				}
+				fmt.Printf("%s call to %s\n", hostname, string(bs))
 			}
-			if resp.Body == nil {
-				fmt.Println(hostname, "body is nil")
-				continue
-			}
-			bs, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-				fmt.Println(hostname, err)
-				continue
-			}
-			fmt.Printf("%s call to %s\n", hostname, string(bs))
-		}
-	}()
+		}()
+	}
+
 	http.HandleFunc("/", handler)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
